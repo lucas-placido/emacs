@@ -63,7 +63,7 @@
 
 (use-package ace-window
   :ensure t
-  :bind("C-<tab>" . ace-window))
+  :bind("M-o" . ace-window))
 
 ;; (use-package elpy
 ;;   :ensure t
@@ -78,7 +78,10 @@
 ;; py-autopep8
 
 
-(package-initialize) ; iniciar pacotes
+; inicializa o pacote
+(when (< emacs-major-version 27)
+  (package-initialize))
+
 (package-refresh-contents)
 
 ; Atalhos personalizados
