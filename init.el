@@ -1,6 +1,7 @@
 ;;; init.el --- Initialization file for Emacs
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
+;;; Configurações nativas
 ; Remover boas vindas
 (setq inhibit-startup-message t)
 
@@ -14,7 +15,6 @@
 ; Tamanho da janela
 (set-frame-parameter nil 'fullscreen 'fullheight)
 
-
 ; Remover scroll bar
 (scroll-bar-mode -1)
 
@@ -27,7 +27,7 @@
 ; Tema
 (load-theme 'misterioso)
 
-; Pacotes
+;;; Pacotes
 (require 'package)
 (setq package-enable-at-startup nil) ; desativar ativação
 
@@ -65,6 +65,18 @@
   :ensure t
   :bind("M-o" . ace-window))
 
+(use-package magit
+  :ensure t)
+
+(use-package multiple-cursors
+  :ensure t
+  :config (progn
+	    (global-set-key (kbd "C-c <down>") 'set-rectangular-region-anchor)
+	    (global-set-key (kbd "C-c <up>") 'set-rectangular-region-anchor)
+	    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+	    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+	    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
 ;; (use-package elpy
 ;;   :ensure t
 ;;   :init (elpy-enable))
@@ -84,26 +96,29 @@
 
 (package-refresh-contents)
 
-; Atalhos personalizados
-(global-set-key (kbd "C-<tab>") 'other-window)
-
+;;; Atalhos personalizados
+; Configura tamanho das janelas
 (global-set-key (kbd "M-<down>") 'enlarge-window)
 (global-set-key (kbd "M-<up>") 'shrink-window)
 (global-set-key (kbd "M-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "M-<left>") 'shrink-window-horizontally)
 
-(global-set-key (kbd "C-<delete>") 'delete-window)
+(global-set-key (kbd "C-x k") 'kill-this-buffer) ; deleta o buffer sem prompt
+(global-set-key (kbd "C-<delete>") 'delete-window) ; deleta janela
+(global-set-key "\C-x\C-b" 'buffer-menu) ; abre o menu de buffer na janela atual
+
 (global-set-key (kbd "C-e") 'kill-ring-save) ; copy
-(global-set-key (kbd "C-;") 'comment-line)
+(global-set-key (kbd "C-;") 'comment-line) ; comenta a linha
 
 ; Cria prefixo C-z
 (define-prefix-command 'C-z-map)
 (global-set-key (kbd "C-z") 'C-z-map)
 
+; Cria janelas
 (global-set-key (kbd "C-z <right>") 'split-window-right)
 (global-set-key (kbd "C-z <down>") 'split-window-below)
 
-; Melpa stuff
+;;; Melpa stuff
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
