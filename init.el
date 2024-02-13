@@ -22,7 +22,8 @@
 (global-display-line-numbers-mode 1)
 
 ; Tamanho da fonte
-(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'default nil :height 120 :family "Nimala UI") ; (font-family-list) C-j
+(setq custom-safe-themes t)
 
 ; Tema
 ;; (load-theme 'misterioso)
@@ -80,7 +81,14 @@
 
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+  :config (progn
+	    (setq doom-modeline-env-version t)
+	    (setq auto-revert-check-vc-info t)
+	    (setq doom-modeline-total-line-number t)
+	    (if (facep 'mode-line-active)
+		(set-face-attribute 'mode-line-active nil :family "Segoe UI Black" :height 100)
+	      (set-face-attribute 'mode-line nil :family "Segoe UI Black" :height 100)n)))
 
 (use-package neotree
   :ensure t
@@ -110,9 +118,7 @@
 	      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 	      (setq venv-location "C:/Users/lucas/AppData/Local/Programs/Python/")
 	      (setq venv-dirlookup-names '(".venv" "venv" ".env" "env" "pyenv" ".virtual"))
-	      (setq projectile-enable-caching t)
-	      )
-)             
+	      (setq projectile-enable-caching t)))             
     
 (use-package ivy
   :ensure t
@@ -168,6 +174,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-Iosvkem))
+ '(custom-safe-themes
+   '("6f96a9ece5fdd0d3e04daea6aa63e13be26b48717820aa7b5889c602764cf23a" "8b148cf8154d34917dfc794b5d0fe65f21e9155977a36a5985f89c09a9669aa0" "456697e914823ee45365b843c89fbc79191fdbaff471b29aad9dcbe0ee1d5641" "6f1f6a1a3cff62cc860ad6e787151b9b8599f4471d40ed746ea2819fcd184e1a" "d6b934330450d9de1112cbb7617eaf929244d192c4ffb1b9e6b63ad574784aad" "4ade6b630ba8cbab10703b27fd05bb43aaf8a3e5ba8c2dc1ea4a2de5f8d45882" "4e2e42e9306813763e2e62f115da71b485458a36e8b4c24e17a2168c45c9cf9d" "dccf4a8f1aaf5f24d2ab63af1aa75fd9d535c83377f8e26380162e888be0c6a9" "b5fd9c7429d52190235f2383e47d340d7ff769f141cd8f9e7a4629a81abc6b19" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" default))
  '(package-selected-packages
    '(doom-modeline all-the-icons-dired dired-hide-dotfiles dired doom-themes ivy projectile auto-virtualenv pytest blacken pyvenv pyenv magit elpy flycheck ace-window all-the-icons neotree which-key try))
  '(safe-local-variable-values '((eval venv-workon "elpy/rpc-venv/"))))
