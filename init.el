@@ -25,7 +25,15 @@
 (set-face-attribute 'default nil :height 120)
 
 ; Tema
-(load-theme 'misterioso)
+;; (load-theme 'misterioso)
+
+; Escape
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+
+; Create folder to save backups
+(setq backup-directory-alist
+      `(("." . ,(concat user-emacs-directory "backups"))))
 
 ;;; Pacotes
 (require 'package)
@@ -39,9 +47,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(use-package try
-  :ensure t)
-
 (use-package which-key
   :ensure t
   :config (which-key-mode))
@@ -52,9 +57,27 @@
 	  (ac-config-default)
 	  (global-auto-complete-mode t)))
 
+(use-package dired-hide-dotfiles
+  :ensure t
+  :config (dired-hide-dotfiles-mode))
+
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
+(setq neo-theme (if (display-graphic-p) 'icons 'icons))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(use-package doom-themes
+  :ensure t
+  :config
+    (load-theme 'doom-one t))
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
 (use-package neotree
   :ensure t
@@ -77,44 +100,38 @@
 	    (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
 	    (global-set-key (kbd "C-c C-.") 'mc/mark-all-like-this)))
 
+(use-package projectile
+    :ensure t
+    :init (projectile-global-mode)
+    :config (progn
+	      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+	      (setq venv-location "C:/Users/lucas/AppData/Local/Programs/Python/")
+	      (setq venv-dirlookup-names '(".venv" "venv" ".env" "env" "pyenv" ".virtual"))
+	      (setq projectile-enable-caching t)
+	      )
+)             
+    
+(use-package ivy
+  :ensure t
+  :init (ivy-mode)
+  :config (progn
+	    (setq ivy-use-virtual-buffers t)
+            (setq enable-recursive-minibuffers t)
+            (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)))
+
 
 ;; Python
-;; (use-package pyvenv
-;;   :ensure t
-;;   :init (pyvenv-mode))
-
-;; (use-package blacken
-;;   :ensure t
-;;   :init (blacken-mode)
-;;   :hook (add-hook 'python-mode-hook 'blacken-mode))
-
-;; (use-package py-autopep8
-;;   :ensure t
-;;   :init (py-autopep8-mode)
-;;   :hook (add-hook 'python-mode-hook 'py-autopep8-mode))
-
-;; (use-package py-isort
-;;   :ensure t
-;;   :hook (add-hook 'before-save-hook 'py-isort-before-save))
-
-;; (use-package pytest
-;;   :ensure t)
-  
-
 (use-package elpy
   :ensure t
-  :init (elpy-enable)
-  :config (progn
-	    (flymake-mode -1))
-  :hook (add-hook 'python-mode-hook 'blaken-mode))
+  :init (elpy-enable))
+(add-hook 'elpy-mode-hook (lambda ()
+                            (add-hook 'before-save-hook
+                                      'elpy-black-fix-code nil t)))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode t))
-
-; inicializa o pacote
+;; inicializa o pacote
 (when (< emacs-major-version 27)
   (package-initialize))
+
 
 (package-refresh-contents)
 
@@ -136,12 +153,11 @@
 (define-prefix-command 'C-z-map)
 (global-set-key (kbd "C-z") 'C-z-map)
 
-; Cria janelas
-(global-set-key (kbd "C-z <right>") 'split-window-right)
-(global-set-key (kbd "C-z <down>") 'split-window-below)
+; 
 
 ; Python
-(global-set-key (kbd "<f7>") (kbd "C-u C-c C-c"))
+(global-set-key (kbd "<f7>") (kbd "C-u C-c C-c")) ; elpy shortcut
+
 
 ;;; Melpa stuff
 (custom-set-variables
@@ -150,7 +166,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(pytest blacken pyvenv pyenv magit elpy flycheck ace-window all-the-icons neotree which-key try)))
+   '(doom-modeline all-the-icons-dired dired-hide-dotfiles dired doom-themes ivy projectile auto-virtualenv pytest blacken pyvenv pyenv magit elpy flycheck ace-window all-the-icons neotree which-key try))
+ '(safe-local-variable-values '((eval venv-workon "elpy/rpc-venv/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
