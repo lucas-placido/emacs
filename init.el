@@ -70,6 +70,9 @@
   :ensure t
   :hook (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
+(use-package nerd-icons
+  :ensure t)
+
 (use-package doom-themes
   :ensure t
   :config
