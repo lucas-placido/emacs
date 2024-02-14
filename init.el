@@ -100,6 +100,14 @@
   :config (progn
 	    (setq ivy-use-virtual-buffers t)
             (setq enable-recursive-minibuffers t)
+	    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+	    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+	    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+	    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+	    (global-set-key (kbd "M-x") 'counsel-M-x)
+	    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+	    (global-set-key "\C-s" 'swiper) ; Alternative to isearch
+	    (setq ivy-use-selectable-prompt t)
             (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)))
 
 (use-package counsel-projectile
@@ -136,13 +144,16 @@
 
 (use-package all-the-icons-ivy-rich
   :ensure t
-  :init (all-the-icons-ivy-rich-mode 1)
+  :after counsel-projectile
+  :init (all-the-icons-ivy-rich-mode +1)
   :config (setq all-the-icons-ivy-rich-icon t))
 
 (use-package ivy-rich
   :ensure t
-  :init (ivy-rich-mode 1))
+  :after all-the-icons-ivy-rich
+  :init (ivy-rich-mode +1))
 
+(all-the-icons-ivy-setup)
 
 ;; Python
 (use-package flycheck
@@ -212,7 +223,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(counsel-projectile all-the-icons-ivy-rich py-autopep8 which-key projectile neotree multiple-cursors magit ivy flycheck elpy doom-themes doom-modeline dired-hide-dotfiles auto-complete all-the-icons-dired ace-window)))
+   '(feh counsel-projectile all-the-icons-ivy-rich py-autopep8 which-key projectile neotree multiple-cursors magit ivy flycheck elpy doom-themes doom-modeline dired-hide-dotfiles auto-complete all-the-icons-dired ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
