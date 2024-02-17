@@ -153,8 +153,6 @@
   :after all-the-icons-ivy-rich
   :init (ivy-rich-mode +1))
 
-(all-the-icons-ivy-setup)
-
 ;; Python
 (use-package flycheck
   :ensure t
