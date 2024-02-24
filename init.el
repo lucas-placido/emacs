@@ -33,22 +33,33 @@
 ; Escape
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+; Auto complete
+(electric-pair-mode t)
 
 ; Create folder to save backups
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
+
+; Tira o som da notificação
+(setq visible-bell t)
+
+(delete-selection-mode 1)
 
 ;;; Pacotes
 (require 'package)
 (setq package-enable-at-startup nil) ; desativar ativação
 
 ; MELPA
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+
+; Cria prefixo C-z
+(define-prefix-command 'C-z-map)
+(global-set-key (kbd "C-z") 'C-z-map)
 
 
 ;; Utilizade
@@ -73,7 +84,7 @@
 
 (use-package ace-window
   :ensure t
-  :bind("M-o" . ace-window))
+  :bind("C-<tab>" . ace-window))
 
 (use-package magit
   :ensure t)
@@ -87,12 +98,12 @@
 	    (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
 	    (global-set-key (kbd "C-c C-.") 'mc/mark-all-like-this)))
 
-(use-package projectile
-    :ensure t
-    :init (projectile-mode t)
-    :config (progn
-	      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-	      (setq projectile-enable-caching t)))
+;; (use-package projectile
+;;     :ensure t
+;;     :init (projectile-mode t)
+;;     :config (progn
+;; 	      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;; 	      (setq projectile-enable-caching t)))
 
 (use-package ivy
   :ensure t
@@ -154,24 +165,58 @@
   :init (ivy-rich-mode +1))
 
 ;; Python
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode t))
+;; (use-package flycheck
+;;   :ensure t
+;;   :init (global-flycheck-mode t))
 
-(use-package elpy
-  :ensure t
-  :init (elpy-enable)
-(when (load "flycheck" t t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode)))
+;; (use-package elpy
+;;   :ensure t
+;;   :init (elpy-enable))
+;; (when (load "flycheck" t t)
+;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+;;   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
-(add-hook 'elpy-mode-hook (lambda ()
-                            (add-hook 'before-save-hook
-                                      'elpy-black-fix-code nil t)))
+;; (add-hook 'elpy-mode-hook (lambda ()
+;;                             (add-hook 'before-save-hook
+;;                                       'elpy-black-fix-code nil t)))
 
-(use-package py-autopep8
-  :ensure t
-  :hook ((python-mode) . py-autopep8-mode))
+;; (use-package py-autopep8
+;;   :ensure t
+;;   :hook ((python-mode) . py-autopep8-mode))
+
+;; (use-package ein)
+;; (use-package ein-notebook)
+
+;; Use IPython for REPL
+;; (setq python-shell-interpreter "jupyter"
+;;       python-shell-interpreter-args "console --simple-prompt"
+;;       python-shell-prompt-detect-failure-warning nil)
+;; (add-to-list 'python-shell-completion-native-disabled-interpreters
+;;              "jupyter")
+
+
+;; (use-package eshell-toggle
+;;   :custom
+;;   (eshell-toggle-size-fraction 3)
+;;   (eshell-toggle-use-projectile-root t)
+;;   (eshell-toggle-run-command nil)
+;;   (eshell-toggle-init-function #'eshell-toggle-init-ansi-term)
+;;   :bind ("C-z s" . eshell-toggle))
+
+;; (defun shell-other-window ()
+;;   "Open a `shell' in a new window."
+;;   (interactive)
+;;   (let ((buf (shell)))
+;;     (switch-to-buffer (other-buffer buf))
+;;     (switch-to-buffer-other-window buf)))
+
+;; (global-set-key (kbd "C-z n") 'shell-other-window)
+
+
+;; (use-package eshell-syntax-highlighting
+;;   :after esh-mode
+;;   :config
+;;   (eshell-syntax-highlighting-global-mode +1))
 
 ;; inicializa o pacote
 (when (< emacs-major-version 27)
@@ -194,9 +239,8 @@
 (global-set-key (kbd "C-e") 'kill-ring-save) ; copy
 (global-set-key (kbd "C-;") 'comment-line) ; comenta a linha
 
-; Cria prefixo C-z
-;; (define-prefix-command 'C-z-map)
-;; (global-set-key (kbd "C-z") 'C-z-map)
+;; Python mode
+ ;; (define-key python-mode-map (kbd "TAB") #'indent-region)
 
 ; Undo all
 (defun undo-all ()
@@ -208,26 +252,27 @@
     (undo-more 1))
   (message "Buffer was completely undone"))
 
-(global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "C-M-z") 'undo-all)
+;; (global-set-key (kbd "C-z") 'undo)
+;; (global-set-key (kbd "C-M-z") 'undo-all)
 
 
 ; Python
 (global-set-key (kbd "<f7>") (kbd "C-u C-c C-c")) ; elpy shortcut
 
+
+
+(provide 'init)
+;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(feh counsel-projectile all-the-icons-ivy-rich py-autopep8 which-key projectile neotree multiple-cursors magit ivy flycheck elpy doom-themes doom-modeline dired-hide-dotfiles auto-complete all-the-icons-dired ace-window)))
+   '(eshell-syntax-highlighting eshell-toggle which-key py-autopep8 neotree multiple-cursors magit flycheck elpy ein doom-themes doom-modeline dired-hide-dotfiles counsel-projectile auto-complete all-the-icons-ivy-rich all-the-icons-dired ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(provide 'init)
-;;; init.el ends here
